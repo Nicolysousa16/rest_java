@@ -1,11 +1,14 @@
 package com.example.proj_novo;
 
+import java.time.LocalDate;
+
 public record Prato(
         String nome,
         String tipo,
         int porcoes,
-        String data,
         String categoria,
+        LocalDate dataPlanejada,
+        String observacao,
         boolean feito
 ) {}
 

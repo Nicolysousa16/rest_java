@@ -1,141 +1,157 @@
-@param int total
-@param long feitos
-@param String proximaData
+@import com.example.proj_novo.Prato
+@import java.util.List
+@param List<Prato> pratos
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cardápio da Semana</title>
-
     <link rel="stylesheet" href="/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
 <div class="container">
 
-
+    <!-- MENU LATERAL -->
     <aside class="sidebar">
 
-        <div class="logo">
-            <span>🍳</span>
-            <h2>Cardápio da Semana</h2>
-        </div>
+        <h2>🍳 Cardápio da Semana</h2>
 
         <nav>
-            <a href="/" class="active">
-                🏠 Início
-            </a>
+            <a href="/" class="active">🏠 Início</a>
 
-            <a href="/pratos">
-                🍽️ Meu Cardápio
-            </a>
+            <a href="/#cardapio">🍽️ Meu Cardápio</a>
 
-            <a href="/pratos/novo">
-                ➕ Adicionar Prato
-            </a>
+            <a href="/pratos/novo">➕ Adicionar Prato</a>
 
-            <a href="/pratos/feitos">
-                ✅ Feitos
-            </a>
+            <a href="/#cardapio">✅ Pratos cadastrados</a>
         </nav>
 
-        <div class="sidebar-footer">
-            <p>Organize sua semana com carinho! 💜</p>
-        </div>
+        <p class="sidebar-footer">
+            Organize suas refeições!
+        </p>
 
     </aside>
 
 
-
+    <!-- CONTEÚDO -->
     <main class="content">
-
-        <header class="topbar">
-            <span>Minha cozinha</span>
-            <div class="profile">👩🏻‍🍳</div>
-        </header>
 
         <section class="welcome">
 
-            <div class="welcome-text">
-
-                <span class="tag">SEU PLANEJAMENTO SEMANAL</span>
-
+            <div>
                 <h1>Bem-vindo(a) à sua cozinha!</h1>
 
                 <p>
-                    Planeje as refeições da semana e marque
-                    o que já saiu do fogão.
+                    Planeje as refeições da semana
+                    e marque o que já saiu do fogão.
                 </p>
 
-                <div class="buttons">
-                    <a href="/pratos" class="btn-primary">
-                        Ver meu cardápio →
-                    </a>
-
-                    <a href="/pratos/novo" class="btn-secondary">
-                        + Novo prato
-                    </a>
-                </div>
-
+                <a href="/pratos/novo" class="btn-primary">
+                    + Novo prato
+                </a>
             </div>
 
             <div class="welcome-image">
-                <span>🍲</span>
-                <p>Uma semana deliciosa começa aqui!</p>
+                🍲
             </div>
 
         </section>
 
 
-
+        <!-- ESTATÍSTICAS -->
         <section class="statistics">
 
             <div class="stat-card">
-                <span class="stat-icon">📋</span>
-                <h2>${total}</h2>
+                <h2>${pratos.size()}</h2>
                 <p>Pratos planejados</p>
             </div>
 
             <div class="stat-card">
-                <span class="stat-icon">🍽️</span>
-                <h2>${feitos}</h2>
+                <h2>${pratos.stream().filter(p -> p.feito()).count()}</h2>
                 <p>Pratos feitos</p>
             </div>
 
             <div class="stat-card">
-                <span class="stat-icon">📅</span>
-                <h2>${proximaData}</h2>
-                <p>Próximo prato</p>
+                <h2>${pratos.stream().filter(p -> !p.feito()).count()}</h2>
+                <p>Pendentes</p>
             </div>
 
         </section>
 
 
-        <section class="bottom-section">
+        <!-- LISTA DE PRATOS -->
+        <section id="cardapio" class="cardapio">
 
-            <div class="bottom-card">
-                <h3>✨ Organização da semana</h3>
-                <p>
-                    Acompanhe suas refeições e mantenha
-                    seu planejamento sempre atualizado.
-                </p>
+            <div class="section-header">
 
-                <a href="/pratos">Acessar cardápio →</a>
+                <h2>Meu Cardápio 🍽️</h2>
+
+                <a href="/pratos/novo">
+                    + Adicionar
+                </a>
+
             </div>
 
-            <div class="bottom-card highlight">
-                <h3>🥗 Hora de cozinhar!</h3>
-                <p>
-                    Adicione novas receitas e deixe sua
-                    semana ainda mais saborosa.
-                </p>
 
-                <a href="/pratos/novo">Adicionar receita →</a>
-            </div>
+            @if(pratos.isEmpty())
+
+                <div class="empty">
+
+                    <h3>Nenhum prato cadastrado ainda!</h3>
+
+                    <p>
+                        Comece adicionando o primeiro prato
+                        ao seu cardápio.
+                    </p>
+
+                    <a href="/pratos/novo" class="btn-primary">
+                        Adicionar primeiro prato
+                    </a>
+
+                </div>
+
+            @else
+
+                <div class="pratos-grid">
+
+                    @for(Prato prato : pratos)
+
+                        <article class="prato-card">
+
+                            <span class="categoria">
+                                ${prato.categoria()}
+                            </span>
+
+                            <h3>${prato.nome()}</h3>
+
+                            <p>🍴 ${prato.tipo()}</p>
+
+                            <p>👥 ${prato.porcoes()} porções</p>
+
+                            <p>📅 ${prato.dataPlanejada().toString()}</p>
+
+                            <p>
+                                ${prato.feito() ? "✅ Feito" : "⏳ Pendente"}
+                            </p>
+
+                            @if(!prato.observacao().isBlank())
+                                <p class="observacao">
+                                    ${prato.observacao()}
+                                </p>
+                            @endif
+
+                        </article>
+
+                    @endfor
+
+                </div>
+
+            @endif
 
         </section>
 
